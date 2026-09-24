@@ -33,3 +33,16 @@ curl http://localhost:5173/api/metrics
 docker compose exec -T backend pytest -q
 docker compose exec -T frontend npm test
 ```
+
+## Phase 3 - Repository rule validation
+
+Validated on 2026-09-24 with read-only task rehearsals against the current repository.
+
+| Rule | Project task used | Result |
+| --- | --- | --- |
+| `api-contract-changes.md` | Add a new `operation_type` literal across the API and frontend | Refined to name the exact backend literal, mirrored frontend type, fixtures, tests, and validation commands. Revalidation found the task actionable. |
+| `frontend-financial-logic.md` | Change percentage formatting from one to two decimal places | Correctly directed the change to `financial-utils.ts`, its colocated test, and frontend test/lint/build commands. No refinement needed. |
+| `service-validation.md` | Decide whether Compose is healthy after a proxy change | Required checks for backend health, frontend root, and the proxied metrics route. This catches the observed HTTP 502 that container status alone missed. No refinement needed. |
+| `documentation-evidence.md` | Document a service port change | Refined to require both README languages, an executed URL check, and a distinction between published host ports and the internal Vite proxy target. Revalidation found the task actionable. |
+
+All four rules retained repository-specific evidence and produced concrete files and checks for their task. Generic guidance was not promoted into `.agents/rules`.
