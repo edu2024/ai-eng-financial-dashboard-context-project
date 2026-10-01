@@ -46,3 +46,15 @@ Validated on 2026-09-24 with read-only task rehearsals against the current repos
 | `documentation-evidence.md` | Document a service port change | Refined to require both README languages, an executed URL check, and a distinction between published host ports and the internal Vite proxy target. Revalidation found the task actionable. |
 
 All four rules retained repository-specific evidence and produced concrete files and checks for their task. Generic guidance was not promoted into `.agents/rules`.
+
+## Phase 4 - Proxy connectivity fix
+
+Verified on 2026-10-01 after reproducing the Compose network timeout documented in phase 1.
+
+- `docker compose config --quiet` passed.
+- The backend health endpoint returned HTTP 200 on `http://localhost:8000/health`.
+- The frontend root returned HTTP 200 on `http://localhost:5173`.
+- The proxied metrics endpoint returned HTTP 200 on `http://localhost:5173/api/metrics`.
+- A request from the frontend container to `http://host.docker.internal:8000/health` returned HTTP 200.
+
+The Vite proxy now targets the backend's published host port through `host.docker.internal`, and Compose maps that hostname to the Docker host with `extra_hosts`. This is required in the current environment because direct traffic between the frontend and backend bridge-network IPs timed out.
