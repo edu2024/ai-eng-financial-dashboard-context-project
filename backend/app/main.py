@@ -1,16 +1,27 @@
 import logging
 import os
 import time
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.database import close_db, init_db
 from app.routes import router
 from app.routers.telemetry import router as telemetry_router
 
 logger = logging.getLogger("api.timing")
 
-app = FastAPI(title="HealthCore API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Startup: initialise database pool. Shutdown: close pool."""
+    await init_db()
+    yield
+    await close_db()
+
+
+app = FastAPI(title="HealthCore API", lifespan=lifespan)
 
 # TELEMETRY_ENDPOINT is read for configuration (used in Phase 3).
 # The frontend uses NEXT_PUBLIC_TELEMETRY_ENDPOINT to point to this stub.

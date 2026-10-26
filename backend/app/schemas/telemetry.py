@@ -2,7 +2,7 @@
 Telemetry event schemas for HealthCore.
 
 Defines the Pydantic models for the telemetry event envelope and batch
-request used by the POST /telemetry/events stub endpoint.
+request used by the POST /telemetry/events endpoint.
 """
 
 from __future__ import annotations
@@ -51,15 +51,33 @@ class TelemetryEvent(BaseModel):
 
 
 class TelemetryBatch(BaseModel):
-    """Batch of telemetry events sent from the frontend capture service."""
+    """Batch of telemetry events sent from the frontend capture service.
 
-    events: list[TelemetryEvent]
+    NOTE: events is declared as list[dict] (raw) so that FastAPI does NOT
+    pre-validate each event against TelemetryEvent.  Validation is done
+    inside the handler per-event so that invalid events don't reject the
+    whole batch (partial acceptance).
+    """
+
+    events: list[dict]
 
 
 class TelemetryBatchResponse(BaseModel):
-    """Response returned by the POST /telemetry/events stub endpoint."""
+    """Response returned by the POST /telemetry/events endpoint.
+
+    Reports how many events were received, how many were stored,
+    and how many were rejected due to validation failure.
+    """
 
     received: int = Field(
         ...,
-        description="Number of events received and validated in the batch",
+        description="Number of events received in the batch",
+    )
+    stored: int = Field(
+        ...,
+        description="Number of events successfully persisted",
+    )
+    rejected: int = Field(
+        ...,
+        description="Number of events rejected (failed validation)",
     )
