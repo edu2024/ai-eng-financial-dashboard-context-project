@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import close_db, init_db
 from app.routes import router
 from app.routers.telemetry import router as telemetry_router
+from app.routers.telemetry_report import router as telemetry_report_router
 
 logger = logging.getLogger("api.timing")
 
@@ -36,6 +37,7 @@ app.add_middleware(
 )
 app.include_router(router)
 app.include_router(telemetry_router)
+app.include_router(telemetry_report_router)
 
 
 @app.middleware("http")

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { DashboardHeader, type DashboardPage } from "@/components/dashboard/dashboard-header";
 import { KPIRow } from "@/components/dashboard/kpi-row";
+import { TelemetryDashboard } from "@/components/telemetry/telemetry-dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -60,6 +61,7 @@ function ChartSkeleton() {
 }
 
 function App() {
+  const [page, setPage] = useState<DashboardPage>("dashboard");
   const [movements, setMovements] = useState<FinancialMovement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -153,29 +155,39 @@ function App() {
     <main className="dark min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
-          <DashboardHeader period="2024 - Full Year" />
+          <DashboardHeader
+            page={page}
+            onPageChange={setPage}
+            period="2024 - Full Year"
+          />
 
-          {error ? (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive-foreground">
-              {error}
-            </div>
-          ) : null}
+          {page === "telemetry" ? (
+            <TelemetryDashboard />
+          ) : (
+            <>
+              {error ? (
+                <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive-foreground">
+                  {error}
+                </div>
+              ) : null}
 
-          <section aria-label="Key performance indicators">
-            <KPIRow metrics={metrics} loading={loading} />
-          </section>
+              <section aria-label="Key performance indicators">
+                <KPIRow metrics={metrics} loading={loading} />
+              </section>
 
-          <section
-            aria-label="Financial charts"
-            className="grid grid-cols-1 gap-4 xl:grid-cols-2"
-          >
-            <Suspense fallback={<ChartSkeleton />}>
-              <IncomeOutcomeChart data={monthlyData} loading={loading} />
-            </Suspense>
-            <Suspense fallback={<ChartSkeleton />}>
-              <ProfitPercentChart data={monthlyData} loading={loading} />
-            </Suspense>
-          </section>
+              <section
+                aria-label="Financial charts"
+                className="grid grid-cols-1 gap-4 xl:grid-cols-2"
+              >
+                <Suspense fallback={<ChartSkeleton />}>
+                  <IncomeOutcomeChart data={monthlyData} loading={loading} />
+                </Suspense>
+                <Suspense fallback={<ChartSkeleton />}>
+                  <ProfitPercentChart data={monthlyData} loading={loading} />
+                </Suspense>
+              </section>
+            </>
+          )}
         </div>
       </div>
     </main>

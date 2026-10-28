@@ -53,7 +53,7 @@ interface TelemetryBatch {
 /*  Internal state                                                     */
 /* ------------------------------------------------------------------ */
 
-let queue: TelemetryEvent[] = []
+const queue: TelemetryEvent[] = []
 let sessionId: string | null = null
 let flushTimer: ReturnType<typeof setTimeout> | null = null
 let isFlushing = false
