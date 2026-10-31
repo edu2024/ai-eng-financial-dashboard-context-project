@@ -57,6 +57,7 @@
                 "product_id": { "type": "string" },
                 "product_category": { "type": "string", "enum": ["medication", "ppe", "consumable", "equipment"] },
                 "quantity": { "type": "number", "minimum": 0, "description": "Received quantity." },
+                "unit_cost": { "type": "number", "minimum": 0, "description": "Cost per unit in clinic's local currency (USD or GBP). Added for business performance pipeline." },
                 "supplier_id": { "type": "string", "description": "Optional supplier identifier." },
                 "supplier_name": { "type": "string", "description": "Optional supplier name. Organisational name, not PHI." },
                 "lot_id": { "type": "string", "description": "Optional lot identifier if supplies are lot-controlled." }

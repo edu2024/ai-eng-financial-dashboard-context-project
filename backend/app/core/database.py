@@ -38,6 +38,9 @@ ALLOWLIST_KEYS: frozenset[str] = frozenset({
     "lot_id",
     "reorder_point",
     "available_stock",
+    # Cost fields for business performance pipeline (data-pipelines BRIEFING)
+    "unit_cost",
+    "total_cost",
     # Stock threshold / expiry alerts (M3, M5)
     "currentStock",
     "threshold",
